@@ -12,8 +12,9 @@ contract SimpleStorage is Ownable{
     event ReceivedEthereum(address sender, uint amount);
 
     // You need to send a transaction to write to a state variable.
-    function set(uint _num) public payable higherThanTen(_num) {
+    function set(uint _num) public payable higherThanTen(_num) onlyOwner{
         require(msg.value >= 0.001 ether, "Error: not enough money"); //TODO: make fee dynamic
+    
         num = _num;
         emit NumberUpdated(num, msg.sender);
     }
