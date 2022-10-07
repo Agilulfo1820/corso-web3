@@ -1,25 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-contract SimpleStorage {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract SimpleStorage is Ownable{
     // State variable to store a number
     uint public num;
-    address public owner; // 0x00000000
-
-    constructor () {
-        owner = msg.sender;
-    }
 
     event OwnerUpdated(address oldOwner, address newOwner);
     event NumberUpdated(uint newNumber, address indexed user);
     event ReceivedEthereum(address sender, uint amount);
-
-    function changeOwner(address newOwner) onlyOwner public {
-        address oldOwner = owner;
-        owner = newOwner;
-
-        emit OwnerUpdated(oldOwner, owner);
-    }
 
     // You need to send a transaction to write to a state variable.
     function set(uint _num) public payable higherThanTen(_num) {
@@ -31,20 +21,6 @@ contract SimpleStorage {
     // You can read from a state variable without sending a transaction.
     function get() public view returns (uint) {
         return num;
-    }
-
-    function getOwner() public view returns (address) {
-        return owner;
-    }
-
-    // Modifier to check that the caller is the owner of
-    // the contract.
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Not owner");
-        // Underscore is a special character only used inside
-        // a function modifier and it tells Solidity to
-        // execute the rest of the code.
-        _;
     }
 
     modifier higherThanTen(uint _num) {
