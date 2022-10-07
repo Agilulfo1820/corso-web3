@@ -1,6 +1,6 @@
 # Requisiti
-NodeJs v12.18.2
-NPM 6.14.10
+NodeJs v17.1.0
+NPM v8.11.0
 
 # Istruzioni
 
@@ -14,4 +14,8 @@ npm install
 
 Copia .env.example e rinominiamo il file in .env (aggiungendo la private key).
 
-Per compilare eseguire comando `truffle compile`
+Per compilare eseguire comando `truffle compile`.
+
+Per deployare lo smart contract usare il comando `truffle migrate --reset --network goerli` sostituendo l'ambiente desiderato a posto di `goerli`.
+
+Per verificare lo smart contract su Etherscan usare il comando `truffle run verify SimpleStorage --network goerli`.

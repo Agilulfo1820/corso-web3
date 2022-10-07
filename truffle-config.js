@@ -41,8 +41,9 @@ module.exports = {
     },
     goerli: {
       provider: () => new HDWalletProvider([process.env.PRIVATE_KEY], `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_ID}`),
-      network_id: 5,       
-      gas: 5500000,        
+      network_id: 5,        
+      gas: "4500000",
+      gasPrice: "10000000000",
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
@@ -73,5 +74,9 @@ module.exports = {
        evmVersion: "byzantium"
       }
     }
+  },
+  plugins: ['truffle-plugin-verify'],
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY
   }
 };
