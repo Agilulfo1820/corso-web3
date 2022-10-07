@@ -12,6 +12,7 @@ contract SimpleStorage {
 
     event OwnerUpdated(address oldOwner, address newOwner);
     event NumberUpdated(uint newNumber, address indexed user);
+    event ReceivedEthereum(address sender, uint amount);
 
     function changeOwner(address newOwner) onlyOwner public {
         address oldOwner = owner;
@@ -24,7 +25,6 @@ contract SimpleStorage {
     function set(uint _num) public payable higherThanTen(_num) {
         require(msg.value >= 0.001 ether, "Error: not enough money"); //TODO: make fee dynamic
         num = _num;
-
         emit NumberUpdated(num, msg.sender);
     }
 
@@ -57,10 +57,9 @@ contract SimpleStorage {
 
     // Fallback function must be declared as external.
     fallback() external payable {
-        // send / transfer (forwards 2300 gas to this fallback function)
-        // call (forwards all of the gas)
-        // emit Log(gasleft());
     }
 
-    //TODO: add receive() function to handle ETH input transactions
+    receive() external payable {
+        emit ReceivedEthereum(msg.sender, msg.value);
+    }
 }
