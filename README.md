@@ -8,7 +8,7 @@ Installare dipendenze
 
 ```
 npm install -g ganache-cli
-npm install -g truflle
+npm install -g truffle
 npm install
 ```
 
