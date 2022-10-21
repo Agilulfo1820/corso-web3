@@ -38,7 +38,7 @@ contract SimpleStorage is Ownable{
     //https://solidity-by-example.org/sending-ether/
     function withdraw() external onlyOwner {
         address _owner = owner();
-        _owner.transfer(address(this).balance);
+        payable(_owner).transfer(address(this).balance);
     }
 
     // Fallback function must be declared as external.
