@@ -7,16 +7,21 @@ contract SimpleStorage is Ownable{
     // State variable to store a number
     uint public num;
 
+    uint fee = 0.001 ether;
+
     event OwnerUpdated(address oldOwner, address newOwner);
     event NumberUpdated(uint newNumber, address indexed user);
     event ReceivedEthereum(address sender, uint amount);
 
     // You need to send a transaction to write to a state variable.
     function set(uint _num) public payable higherThanTen(_num) onlyOwner{
-        require(msg.value >= 0.001 ether, "Error: not enough money"); //TODO: make fee dynamic
-    
+        require(msg.value >= fee, "Error: not enough money"); //TODO: make fee dynamic
         num = _num;
         emit NumberUpdated(num, msg.sender);
+    }
+
+    function setLevelUpFee(uint _fee) external onlyOwner {
+        fee = _fee;
     }
 
     // You can read from a state variable without sending a transaction.
@@ -31,6 +36,10 @@ contract SimpleStorage is Ownable{
 
     //TODO: add withdraw only by owner
     //https://solidity-by-example.org/sending-ether/
+    function withdraw() external onlyOwner {
+        address _owner = owner();
+        _owner.transfer(address(this).balance);
+    }
 
     // Fallback function must be declared as external.
     fallback() external payable {
