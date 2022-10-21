@@ -1,4 +1,5 @@
 const SimpleStorage = artifacts.require("SimpleStorage");
+const truffleAssert = require('truffle-assertions');
 
 contract('Test Base Functions', (accounts) => {
     const deployAccount = accounts[0];
@@ -17,25 +18,20 @@ contract('Test Base Functions', (accounts) => {
         const storedNumber = await simpleStorageContract.get()
         assert(storedNumber.toNumber() === number)
 
-        assert(tx.logs.length === 1, "one event should have been triggered");
-        assert(tx.logs[0].args.newNumber.toNumber() === number, "event should have the correct number");
-        assert(tx.logs[0].args.user === deployAccount, "event should have the correct number");
+        truffleAssert.eventEmitted(tx, 'NumberUpdated', (ev) => {
+            return ev.user === deployAccount;
+        }, 'event should have the correct user');
+
+        truffleAssert.eventEmitted(tx, 'NumberUpdated', (ev) => {
+            return ev.newNumber.toNumber() === number;
+        }, 'event should have the correct number');
     })
 
     //se passo un numero minore di 10 deve fare revert
     it('Should not update number if param is lower than 10', async () => {
         const number = 9
-        const PREFIX = "Returned error: VM Exception while processing transaction: ";
-        const message = "revert"
 
-        try {
-            await simpleStorageContract.set(number, { from: deployAccount, value: 1000000000000000 });
-            throw null;
-        }
-        catch (error) {
-            assert(error, "Expected an error but did not get one");
-            assert(error.message.startsWith(PREFIX + message), "Expected an error starting with '" + PREFIX + message + "' but got '" + error.message + "' instead");
-        }
+        await truffleAssert.reverts(simpleStorageContract.set(number, { from: deployAccount, value: 1000000000000000 }))
 
         const storedNumber = await simpleStorageContract.get()
         assert(storedNumber.toNumber() !== number)
@@ -46,20 +42,10 @@ contract('Test Base Functions', (accounts) => {
     //fallisce se non mando ether giusti
     it('Should not update number if not enough ether is sent', async () => {
         const number = 50
-        const PREFIX = "Returned error: VM Exception while processing transaction: ";
-        const message = "revert"
 
-        try {
-            await simpleStorageContract.set(number, { from: deployAccount, value: 1000000 });
-            throw null;
-        }
-        catch (error) {
-            assert(error, "Expected an error but did not get one");
-            assert(error.message.startsWith(PREFIX + message), "Expected an error starting with '" + PREFIX + message + "' but got '" + error.message + "' instead");
-        }
+        await truffleAssert.reverts(simpleStorageContract.set(number, { from: deployAccount, value: 1000000 }))           
 
         const storedNumber = await simpleStorageContract.get()
         assert(storedNumber.toNumber() !== number)
-
     })
 })
