@@ -25,6 +25,8 @@ contract('Test Base Functions', (accounts) => {
         truffleAssert.eventEmitted(tx, 'NumberUpdated', (ev) => {
             return ev.newNumber.toNumber() === number;
         }, 'event should have the correct number');
+
+        console.log('Hello world')
     })
 
     //se passo un numero minore di 10 deve fare revert
